@@ -1,0 +1,81 @@
+package com.scaler.productservice.controllers;
+
+import com.scaler.productservice.configurations.ProductServiceFactory;
+import com.scaler.productservice.exceptions.ProductNotFoundException;
+import com.scaler.productservice.models.Product;
+import com.scaler.productservice.services.ProductService;
+import jakarta.websocket.server.PathParam;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+    private ProductService productService;
+
+    public ProductController(ProductServiceFactory productServiceFactory) {
+        this.productService = productServiceFactory.getService();
+    }
+
+    // http://localhost:8080/products/1
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
+//        ResponseEntity<Product> response = null;
+//        try {
+//            Product product = productService.getProductById(id);
+//            response = new ResponseEntity(product, HttpStatus.OK);
+//        }catch (Exception e){
+//            response = new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+//        }
+//        return response;
+//        throw new RuntimeException("Hare Krishna");
+        return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
+    }
+
+
+    //http://localhost:8080/products
+//    @GetMapping()
+//    public Page<Product> getAllProducts(@RequestParam("pageSize") int pageSize, @RequestParam("pageNumber") int pageNumber) throws ProductNotFoundException {
+//        return productService.getAllProducts(pageSize, pageNumber);
+//    }
+    @GetMapping
+    public Page<Product> getAllProducts(
+            @RequestParam int pageSize,
+            @RequestParam int pageNumber,
+            @RequestParam(defaultValue = "price") String sortBy,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        return productService.getAllProducts(pageSize, pageNumber, sortBy, order);
+    }
+
+    @PostMapping()
+    public Product createProduct(@RequestBody Product product){
+        return productService.createProduct(product);
+    }
+
+    @PatchMapping("/{id}")
+    public Product updateProduct(@PathVariable("id") Long id, @RequestBody Product product){
+        return null;
+    }
+
+    @PutMapping("/{id}")
+    public Product replaceProduct(@PathVariable("id") Long id, @RequestBody Product product){
+        return productService.replaceProduct(id, product);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteProduct(@PathVariable("id") Long id){
+        productService.deleteProduct(id);
+    }
+
+//    @ExceptionHandler
+//    public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException exceptionObj) {
+//        return new ResponseEntity<>(exceptionObj.getMessage() + " from controller", HttpStatus.BAD_REQUEST);
+//    }
+}
