@@ -1,6 +1,7 @@
 package com.scaler.productservice.services;
 
 import com.scaler.productservice.dtos.FakeStoreProductDTO;
+import com.scaler.productservice.dtos.ProductFilterRequestDto;
 import com.scaler.productservice.exceptions.ProductNotFoundException;
 import com.scaler.productservice.models.Category;
 import com.scaler.productservice.models.Product;
@@ -89,7 +90,7 @@ public class FakeStoreProductService implements ProductService {
 //    }
 
     @Override
-    public Page<Product> getAllProducts(int pageSize, int pageNumber, String sortBy, String order) {
+    public Page<Product> getAllProducts(int pageSize, int pageNumber, String sortBy, String order, ProductFilterRequestDto productFilterRequestDto) {
 
         // Step 1: Fetch raw DTOs from FakeStore API
         FakeStoreProductDTO[] fakeStoreProductDTOS =

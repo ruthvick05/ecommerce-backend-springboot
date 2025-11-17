@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>{
     @Override
     Optional<Product> findById(Long productId);
 
@@ -25,6 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Product save(Product product);
 
     void deleteById(Long id);
+
 
     // HQL - Hibernate Query Language
     // We can write HQL queries based on the models instead of table from DB.

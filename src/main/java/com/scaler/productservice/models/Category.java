@@ -17,7 +17,8 @@ import java.util.List;
 public class Category extends BaseModel {
     @Column(nullable = false, unique = true)
     private String name;
-//    @OneToMany(mappedBy = "category", cascade = {CascadeType.REMOVE}) // mappedBy can be written only on one to many side
+}
+    //    @OneToMany(mappedBy = "category", cascade = {CascadeType.REMOVE}) // mappedBy can be written only on one to many side
             // Without mappedBy → Hibernate creates an extra join table (category_products). ❌
     //With mappedBy → Hibernate uses the category_id in Product, avoiding unnecessary joins. ✅
             //What Join Table Does Hibernate Create?
@@ -32,7 +33,7 @@ public class Category extends BaseModel {
     //
     //This is redundant and unnecessary, leading to extra queries and slower performance.
 //    List<Product> products;
-}
+
 
 //Cardinality implementation using hibernate:
 //If @manytoone is defined in product class then what happens in different cases when we write different things in category class

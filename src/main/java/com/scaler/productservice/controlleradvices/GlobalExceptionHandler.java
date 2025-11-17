@@ -2,6 +2,7 @@ package com.scaler.productservice.controlleradvices;
 
 import com.scaler.productservice.exceptions.ApiError;
 import com.scaler.productservice.exceptions.ProductNotFoundException;
+import com.scaler.productservice.exceptions.ValidationException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,22 @@ public class GlobalExceptionHandler {
         );
         return  new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ApiError> handleValidationException(
+            ValidationException ex,
+            HttpServletRequest request
+    ) {
+        ApiError error = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation Failed",
+                request.getRequestURI(),
+                ex.getErrors()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiError> handleInvalidInput(

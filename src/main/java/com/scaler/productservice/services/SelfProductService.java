@@ -1,13 +1,17 @@
 package com.scaler.productservice.services;
 
+import com.scaler.productservice.dtos.ProductFilterRequestDto;
 import com.scaler.productservice.models.Category;
 import com.scaler.productservice.repositories.CategoryRepository;
 import com.scaler.productservice.repositories.ProductRepository;
 import com.scaler.productservice.exceptions.ProductNotFoundException;
 import com.scaler.productservice.models.Product;
+import com.scaler.productservice.specifications.ProductSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,9 +46,9 @@ public class SelfProductService implements ProductService {
 //    }
 
     @Override
-    public Page<Product> getAllProducts(int pageSize, int pageNumber, String sortBy, String order) {
+    public Page<Product> getAllProducts(int pageSize, int pageNumber, String sortBy, String order, ProductFilterRequestDto productFilterRequestDto) {
         // Allowed fields
-        List<String> allowedFields = List.of("price", "name", "id");
+        List<String> allowedFields = List.of("price", "title", "id");
 
         // Validate
         if (!allowedFields.contains(sortBy)) {
@@ -56,9 +60,12 @@ public class SelfProductService implements ProductService {
                 Sort.by(sortBy).descending() :
                 Sort.by(sortBy).ascending();
 
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        return productRepository.findAll(pageRequest);
+        Specification<Product> spec = ProductSpecification.withFilters(productFilterRequestDto);
+
+        return productRepository.findAll(spec, pageable);
+
     }
 
     @Override
