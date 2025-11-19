@@ -36,15 +36,6 @@ public class SelfProductService implements ProductService {
         return productOptional.get();
     }
 
-//    @Override
-//    public Page<Product> getAllProducts(int pageSize, int pageNumber) {
-//        Sort sortByPriceDesc = Sort.by("price").descending();
-//        Sort sortByPriceAsc = Sort.by("price").ascending();
-//        return productRepository.findAll(
-//                PageRequest.of(pageNumber, pageSize, sortByPriceAsc )
-//        );
-//    }
-
     @Override
     public Page<Product> getAllProducts(int pageSize, int pageNumber, String sortBy, String order, ProductFilterRequestDto productFilterRequestDto) {
         // Allowed fields
@@ -66,6 +57,26 @@ public class SelfProductService implements ProductService {
 
         return productRepository.findAll(spec, pageable);
 
+    }
+
+    @Override
+    public Page<Product> searchProducts(com.scaler.productservice.dtos.SearchRequest request, int page, int size, String sortBy, String order) {
+        // Allowed fields
+        List<String> allowedFields = List.of("price", "title", "id");
+
+        // Validate
+        if (!allowedFields.contains(sortBy)) {
+            throw new IllegalArgumentException("Invalid sort field: " + sortBy);
+        }
+
+        // sorting logic
+        Sort sort = order.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return productRepository.searchProducts(request.getSearchTerm(), pageable);
     }
 
     @Override
@@ -114,23 +125,5 @@ public class SelfProductService implements ProductService {
         productRepository.deleteById(id);
     }
 
-    @Override
-    public Page<Product> searchProducts(com.scaler.productservice.dtos.SearchRequest request, int page, int size, String sortBy, String order) {
-        // Allowed fields
-        List<String> allowedFields = List.of("price", "title", "id");
 
-        // Validate
-        if (!allowedFields.contains(sortBy)) {
-            throw new IllegalArgumentException("Invalid sort field: " + sortBy);
-        }
-
-        // sorting logic
-        Sort sort = order.equalsIgnoreCase("desc") ?
-                Sort.by(sortBy).descending() :
-                Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        return productRepository.searchProducts(request.getSearchTerm(), pageable);
-    }
 }

@@ -33,24 +33,9 @@ public class ProductController {
     // http://localhost:8080/products/1
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws ProductNotFoundException {
-//        ResponseEntity<Product> response = null;
-//        try {
-//            Product product = productService.getProductById(id);
-//            response = new ResponseEntity(product, HttpStatus.OK);
-//        }catch (Exception e){
-//            response = new ResponseEntity(null, HttpStatus.BAD_REQUEST);
-//        }
-//        return response;
-//        throw new RuntimeException("Hare Krishna");
         return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
     }
 
-
-    //http://localhost:8080/products
-//    @GetMapping()
-//    public Page<Product> getAllProducts(@RequestParam("pageSize") int pageSize, @RequestParam("pageNumber") int pageNumber) throws ProductNotFoundException {
-//        return productService.getAllProducts(pageSize, pageNumber);
-//    }
     @GetMapping
     public Page<Product> getAllProducts(
             @Valid ProductFilterRequestDto productFilterRequestDto,
@@ -94,27 +79,22 @@ public class ProductController {
     }
 
     @PostMapping()
-    public Product createProduct(@RequestBody Product product){
+    public Product createProduct(@RequestBody Product product) {
         return productService.createProduct(product);
     }
 
     @PatchMapping("/{id}")
-    public Product updateProduct(@PathVariable("id") Long id, @RequestBody Product product){
+    public Product updateProduct(@PathVariable("id") Long id, @RequestBody Product product) {
         return null;
     }
 
     @PutMapping("/{id}")
-    public Product replaceProduct(@PathVariable("id") Long id, @RequestBody Product product){
+    public Product replaceProduct(@PathVariable("id") Long id, @RequestBody Product product) {
         return productService.replaceProduct(id, product);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable("id") Long id){
+    public void deleteProduct(@PathVariable("id") Long id) {
         productService.deleteProduct(id);
     }
-
-//    @ExceptionHandler
-//    public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException exceptionObj) {
-//        return new ResponseEntity<>(exceptionObj.getMessage() + " from controller", HttpStatus.BAD_REQUEST);
-//    }
 }

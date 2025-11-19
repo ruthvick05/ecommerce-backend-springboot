@@ -17,7 +17,6 @@ import java.util.List;
 
 @Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService {
-    // This service implementation uses Fake Store to fetch products
 
     //  ✔ Spring checks the constructor and sees that RestTemplate is needed.
     //  ✔ Spring looks for an existing RestTemplate Bean in the Application Context.
@@ -30,11 +29,11 @@ public class FakeStoreProductService implements ProductService {
     }
 
     //Here’s what happens:
-    //1️⃣ Spring checks what arguments the constructor needs (in this case, RestTemplate).
-    //2️⃣ Spring looks in the Application Context (which stores all Beans).
-    //3️⃣ If a RestTemplate Bean already exists (from @Bean in AppConfig), Spring passes that Bean into the constructor.
+    //1️ Spring checks what arguments the constructor needs (in this case, RestTemplate).
+    //2️ Spring looks in the Application Context (which stores all Beans).
+    //3️ If a RestTemplate Bean already exists (from @Bean in AppConfig), Spring passes that Bean into the constructor.
     //   ✔ This is called "Dependency Injection" – Spring is injecting RestTemplate into FakeStoreProductService.
-    //4️⃣ If no RestTemplate Bean is found, Spring throws an error (No qualifying Bean found).
+    //4️ If no RestTemplate Bean is found, Spring throws an error (No qualifying Bean found).
 
     private Product convertFakeStoreProductDTOToProduct(FakeStoreProductDTO fakeStoreProductDTO) {
         Product product = new Product();
@@ -53,8 +52,7 @@ public class FakeStoreProductService implements ProductService {
     @Override
     public Product getProductById(Long productId) throws ProductNotFoundException {
         // Make API call to fake store and get product with given id
-
-        //The getForObject() method in RestTemplate is used to send an HTTP GET request to a given URL
+        // The getForObject() method in RestTemplate is used to send an HTTP GET request to a given URL
         // and retrieve the response as an object.
         FakeStoreProductDTO fakeStoreProductDTO =
                 restTemplate.getForObject("https://fakestoreapi.com/products/{id}", FakeStoreProductDTO.class, productId);
@@ -63,31 +61,7 @@ public class FakeStoreProductService implements ProductService {
             throw new ProductNotFoundException("Product with id: " + productId + " does not exist.");
         }
         return convertFakeStoreProductDTOToProduct(fakeStoreProductDTO);
-//        throw new RuntimeException("Jai Gaura Nitai");
     }
-
-//    @Override
-//    public Page<Product> getAllProducts(int pageSize, int pageNumber) {
-//        // wrong implementation:
-//        //      we want product objs in list
-//        //      This will return a raw List with elements as LinkedHashMap, not FakeStoreProductDTO objects.
-//        //      It doesn’t know the actual type due to type erasure
-//        //return restTemplate.getForObject("https://fakestoreapi.com/products", List.class);
-//
-//        // wrong implementation 2:
-//        //      List<FakeStoreProductDTO>.class doesn’t exist due to Type Erasure.
-////        List<FakeStoreProductDTO> fakeStoreProductDTOs =
-////                restTemplate.getForObject("https://fakestoreapi.com/products", List<FakeStoreProductDTO>.class);
-//
-//        FakeStoreProductDTO[] fakeStoreProductDTOS =
-//                restTemplate.getForObject("https://fakestoreapi.com/products", FakeStoreProductDTO[].class);
-//        // type eraser works on only collection objects like List<T> but arr[] is a data type in java so no typre erasure here
-//        List<Product> products = new ArrayList<>();
-//        for(FakeStoreProductDTO fakeStoreProductDTO : fakeStoreProductDTOS) {
-//            products.add(convertFakeStoreProductDTOToProduct(fakeStoreProductDTO));
-//        }
-//        return new PageImpl<>(products);
-//    }
 
     @Override
     public Page<Product> getAllProducts(int pageSize, int pageNumber, String sortBy, String order, ProductFilterRequestDto productFilterRequestDto) {
@@ -100,7 +74,7 @@ public class FakeStoreProductService implements ProductService {
             return Page.empty();
         }
 
-        // Step 2: Convert DTOs → Product model (your internal format)
+        // Step 2: Convert DTOs → Product model
         List<Product> products = new ArrayList<>();
         for (FakeStoreProductDTO dto : fakeStoreProductDTOS) {
             products.add(convertFakeStoreProductDTOToProduct(dto));
