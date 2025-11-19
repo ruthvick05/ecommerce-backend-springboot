@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Pageable; // CORRECT import java.util.List;
@@ -35,4 +36,12 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     // SQL query also called as Native Query
     @Query(value =  "select p.title, p.price from products p where p.title = :title and p.price = :price", nativeQuery = true)
     List<ProductWithTitleAndPrice> getProductTitleAndPriceSQL(String title, int price);
+
+    @Query("SELECT p from products p " +
+            "WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+            "OR LOWER(p.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+            "OR LOWER(p.brand) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    Page<Product> searchProducts(@Param("searchTerm") String searchTerm, Pageable pageable);
+
+
 }

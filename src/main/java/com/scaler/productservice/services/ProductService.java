@@ -1,6 +1,7 @@
 package com.scaler.productservice.services;
 
 import com.scaler.productservice.dtos.ProductFilterRequestDto;
+import com.scaler.productservice.dtos.SearchRequest;
 import com.scaler.productservice.exceptions.ProductNotFoundException;
 import com.scaler.productservice.models.Product;
 import org.springframework.data.domain.Page;
@@ -13,4 +14,6 @@ public interface ProductService {
     public Product createProduct(Product product);
     public Product replaceProduct(Long id, Product product);
     void deleteProduct(Long id);
+    Page<Product> searchProducts(SearchRequest request, int page, int size, String sortBy, String order);
+
 }

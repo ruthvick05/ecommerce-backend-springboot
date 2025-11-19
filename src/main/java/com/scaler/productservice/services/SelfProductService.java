@@ -113,4 +113,24 @@ public class SelfProductService implements ProductService {
 //        }
         productRepository.deleteById(id);
     }
+
+    @Override
+    public Page<Product> searchProducts(com.scaler.productservice.dtos.SearchRequest request, int page, int size, String sortBy, String order) {
+        // Allowed fields
+        List<String> allowedFields = List.of("price", "title", "id");
+
+        // Validate
+        if (!allowedFields.contains(sortBy)) {
+            throw new IllegalArgumentException("Invalid sort field: " + sortBy);
+        }
+
+        // sorting logic
+        Sort sort = order.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return productRepository.searchProducts(request.getSearchTerm(), pageable);
+    }
 }

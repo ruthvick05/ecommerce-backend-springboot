@@ -14,6 +14,7 @@ public class Product extends BaseModel {
     private String description;
     private int price;
     private String imageUrl;
+    private String brand;
 
     @ManyToOne(cascade = CascadeType.PERSIST) // defines cardinality between products table and categories table
     private Category category;

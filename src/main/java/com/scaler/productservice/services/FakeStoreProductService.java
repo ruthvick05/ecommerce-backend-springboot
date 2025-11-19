@@ -162,4 +162,8 @@ public class FakeStoreProductService implements ProductService {
     @Override
     public void deleteProduct(Long id) {
     }
+    @Override
+    public Page<Product> searchProducts(com.scaler.productservice.dtos.SearchRequest request, int page, int size, String sortBy, String order) {
+        return Page.empty();
+    }
 }

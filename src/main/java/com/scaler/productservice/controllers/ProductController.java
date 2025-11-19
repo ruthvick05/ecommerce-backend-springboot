@@ -2,6 +2,7 @@ package com.scaler.productservice.controllers;
 
 import com.scaler.productservice.configurations.ProductServiceFactory;
 import com.scaler.productservice.dtos.ProductFilterRequestDto;
+import com.scaler.productservice.dtos.SearchRequest;
 import com.scaler.productservice.exceptions.ProductNotFoundException;
 import com.scaler.productservice.exceptions.ValidationException;
 import com.scaler.productservice.models.Product;
@@ -70,6 +71,26 @@ public class ProductController {
         }
 
         return productService.getAllProducts(pageSize, pageNumber, sortBy, order, productFilterRequestDto);
+    }
+
+    @GetMapping("/search")
+    public Page<Product> searchProducts(
+            @Valid SearchRequest searchRequest,
+            BindingResult bindingResult,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(defaultValue = "price") String sortBy,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+
+            bindingResult.getFieldErrors()
+                    .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
+
+            throw new ValidationException(errors);
+        }
+        return productService.searchProducts(searchRequest, page, size, sortBy, order);
     }
 
     @PostMapping()
